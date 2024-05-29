@@ -10,13 +10,13 @@ func TestStore(t *testing.T) {
 	r := Reader{
 		Config: &ynabber.Config{
 			Nordigen: ynabber.Nordigen{
-				BankID: "foo",
+				BankID: "",
 			},
 			DataDir: ".",
 		},
 	}
 	want := "foo.json"
-	got := r.requisitionStore()
+	got := r.requisitionStore("foo")
 	if want != got {
 		t.Fatalf("default: %s != %s", want, got)
 	}

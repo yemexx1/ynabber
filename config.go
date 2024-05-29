@@ -58,6 +58,9 @@ func (cs TransactionStatus) String() string {
 
 // Config is loaded from the environment during execution with cmd/ynabber
 type Config struct {
+	// Port is the port to expose the http server on
+	Port int `envconfig:"YNABBER_PORT" default:"8080"`
+	
 	// DataDir is the path for storing files
 	DataDir string `envconfig:"YNABBER_DATADIR" default:"."`
 

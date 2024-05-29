@@ -56,8 +56,8 @@ func (r Reader) toYnabbers(a ynabber.Account, t nordigen.AccountTransactions) ([
 	return y, nil
 }
 
-func (r Reader) Bulk() (t []ynabber.Transaction, err error) {
-	req, err := r.Requisition()
+func (r Reader) Bulk(bankID string) (t []ynabber.Transaction, err error) {
+	req, err := r.Requisition(bankID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to authorize: %w", err)
 	}
@@ -75,7 +75,7 @@ func (r Reader) Bulk() (t []ynabber.Transaction, err error) {
 		switch accountMetadata.Status {
 		case "EXPIRED", "SUSPENDED":
 			logger.Info("recreating requisition", "status", accountMetadata.Status)
-			r.createRequisition()
+			r.createRequisition(bankID)
 		}
 
 		account := ynabber.Account{
