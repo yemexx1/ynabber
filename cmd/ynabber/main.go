@@ -3,9 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
+	"net/http"
 	"strings"
-	"time"
 
 	"github.com/carlmjohnson/versioninfo"
 	"github.com/kelseyhightower/envconfig"
@@ -57,28 +56,32 @@ func main() {
 		}
 	}
 
-	for {
-		err = run(ynabber, cfg.Interval)
+	port := fmt.Sprintf(":%d", cfg.Port)
+	http.HandleFunc("/run", func(w http.ResponseWriter, r *http.Request) {
+		bankID := r.URL.Query().Get("bankID")
+
+		if bankID == "" {
+			bankID = cfg.Nordigen.BankID
+		}
+
+		err := run(ynabber, bankID)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		} else {
-			log.Printf("Run succeeded")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, "Run succeeded")
 		}
-		if cfg.Interval > 0 {
-			log.Printf("Waiting %s before running again...", cfg.Interval)
-			time.Sleep(cfg.Interval)
-		} else {
-			os.Exit(0)
-		}
-	}
+	})
+
+	log.Fatal(http.ListenAndServe(port, nil))
 }
 
-func run(y ynabber.Ynabber, interval time.Duration) error {
+func run(y ynabber.Ynabber, bankID string) error {
 	var transactions []ynabber.Transaction
 
 	// Read transactions from all readers
 	for _, reader := range y.Readers {
-		t, err := reader.Bulk()
+		t, err := reader.Bulk(bankID)
 		if err != nil {
 			return fmt.Errorf("reading: %w", err)
 		}

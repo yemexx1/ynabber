@@ -12,7 +12,7 @@ type Ynabber struct {
 }
 
 type Reader interface {
-	Bulk() ([]Transaction, error)
+	Bulk(bankID string) ([]Transaction, error)
 }
 
 type Writer interface {
