@@ -64,13 +64,15 @@ func main() {
 			bankID = cfg.Nordigen.BankID
 		}
 
-		err := run(ynabber, bankID)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		} else {
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, "Run succeeded")
-		}
+		go func() {
+			err := run(ynabber, bankID)
+			if err != nil {
+				log.Printf("unable to run sync: %w\n", err)
+			}
+		}()
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "Run succeeded")
 	})
 
 	log.Fatal(http.ListenAndServe(port, nil))
