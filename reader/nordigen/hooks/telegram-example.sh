@@ -25,5 +25,5 @@ status="$1"
 link="$2"
 
 # Send the message to the Telegram channel
-curl -s -X POST https://api.telegram.org/bot${telegram_bot_token}/sendMessage -d chat_id=${telegram_chat_id} -d text="YNABber needs reauthentication\n\nStatus: $status\nLink: $link"
+curl -vvv https://api.telegram.org/bot${telegram_bot_token}/sendMessage -d chat_id=${telegram_chat_id} -d text="YNABber needs reauthentication\n\nStatus: $status\nLink: $link"
 

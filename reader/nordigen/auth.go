@@ -118,10 +118,9 @@ func (r Reader) createRequisition(bankID string) (nordigen.Requisition, error) {
 func (r Reader) requisitionHook(req nordigen.Requisition) {
 	if r.Config.Nordigen.RequisitionHook != "" {
 		cmd := exec.Command(r.Config.Nordigen.RequisitionHook, req.Status, req.Link)
-		_, err := cmd.Output()
+		output, err := cmd.CombinedOutput()
 		if err != nil {
-			log.Printf("failed to run requisition hook: %s", err)
+			log.Printf("failed to run requisition hook: %s, output: %s", err, string(output))
 		}
 	}
 }
-

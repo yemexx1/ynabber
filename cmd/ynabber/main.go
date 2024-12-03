@@ -2,19 +2,17 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"log/slog"
-	"os"
-	"time"
-	"net/http"
-	"strings"
-
 	"github.com/carlmjohnson/versioninfo"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/martinohansen/ynabber"
 	"github.com/martinohansen/ynabber/reader/nordigen"
 	"github.com/martinohansen/ynabber/writer/json"
 	"github.com/martinohansen/ynabber/writer/ynab"
+	"log"
+	"log/slog"
+	"net/http"
+	"os"
+	"time"
 )
 
 func setupLogging(debug bool) {
@@ -35,14 +33,6 @@ func main() {
 	err := envconfig.Process("", &cfg)
 	if err != nil {
 		log.Fatal(err.Error())
-	}
-
-	// Check that some values are valid
-	cfg.YNAB.Cleared = strings.ToLower(cfg.YNAB.Cleared)
-	if cfg.YNAB.Cleared != "cleared" &&
-		cfg.YNAB.Cleared != "uncleared" &&
-		cfg.YNAB.Cleared != "reconciled" {
-		log.Fatal("YNAB_CLEARED must be one of cleared, uncleared or reconciled")
 	}
 
 	setupLogging(cfg.Debug)
@@ -77,7 +67,6 @@ func main() {
 			bankID = cfg.Nordigen.BankID
 		}
 
-
 		err := run(ynabber, bankID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -94,7 +83,9 @@ func main() {
 		}
 	})
 
+	slog.Info("Server running on ", "port", port)
 	log.Fatal(http.ListenAndServe(port, nil))
+
 }
 
 func run(y ynabber.Ynabber, bankID string) error {
