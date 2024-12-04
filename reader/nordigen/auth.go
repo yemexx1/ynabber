@@ -50,14 +50,14 @@ func (r Reader) Requisition(bankID string) (nordigen.Requisition, error) {
 	switch requisition.Status {
 	case "EX":
 		// Create a new requisition if expired
-		log.Printf("Requisition is expired")
+		log.Printf("Requisition is expired, create new requisition")
 		return r.createRequisition(bankID)
 	case "LN":
 		// Return requisition if it's still valid
 		return requisition, nil
 	default:
 		// Handle unknown status by recreating requisition
-		log.Printf("Unsupported requisition status: %s", requisition.Status)
+		log.Printf("Unsupported requisition status: %s, recreating requisition", requisition.Status)
 		return r.createRequisition(bankID)
 	}
 }

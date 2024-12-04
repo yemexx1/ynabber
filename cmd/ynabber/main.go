@@ -74,12 +74,7 @@ func main() {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, "Run succeeded")
 			slog.Info("run succeeded", "in", time.Since(start))
-			if cfg.Interval > 0 {
-				slog.Info("waiting for next run", "in", cfg.Interval)
-				time.Sleep(cfg.Interval)
-			} else {
-				os.Exit(0)
-			}
+			os.Exit(0)
 		}
 	})
 
