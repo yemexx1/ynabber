@@ -121,6 +121,11 @@ func (r Reader) defaultMapper(a ynabber.Account, t nordigen.Transaction) (*ynabb
 		return nil, fmt.Errorf("unrecognized TransactionID: %s", TransactionID)
 	}
 
+	// use entry reference if it exists to prevent duplicates
+	if t.EntryReference != "" {
+		id = t.EntryReference
+	}
+
 	return &ynabber.Transaction{
 		Account: a,
 		ID:      ynabber.ID(id),

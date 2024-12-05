@@ -74,7 +74,6 @@ func main() {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, "Run succeeded")
 			slog.Info("run succeeded", "in", time.Since(start))
-			os.Exit(0)
 		}
 	})
 
